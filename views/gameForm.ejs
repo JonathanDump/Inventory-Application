@@ -15,8 +15,8 @@
       Game description
       <input
         type="text"
-        id="title"
-        name="title"
+        id="description"
+        name="description"
         class="input"
         value="<%= game===null ? '': game.title %>"
       />
@@ -32,37 +32,78 @@
         value="<%= game===null ? '': game.developer %>"
       />
       <datalist id="developers">
-        <%for (developer of developers){%>
+        <%for (const developer of developers){%>
         <option value="<%= developer.name%>"></option>
         <%}%>
       </datalist>
     </label>
 
     <fieldset>
-      <legend>Choose genre*</legend>
-      <% for (genre of genres) { %>
-      <label for="genre"><%= genre.name%></label>
-      <% if(game===null){ %>
-      <input type="checkbox" name="genre[]" required />
-      <% } else { %>
-      <input type="checkbox" name="genre[]" required checked />
-      <% } %> <% } %>
+      <legend>Choose genre(s)*</legend>
+      <% for (const genre of genres) { %>
+      <label for="<%=genre._id%>">
+        <% if(genre.checked){ %>
+        <input
+          id="<%=genre._id%>"
+          type="checkbox"
+          name="genre"
+          checked
+          value="<%= genre._id%>"
+        />
+        <% } else { %>
+        <input
+          id="<%=genre._id%>"
+          type="checkbox"
+          name="genre"
+          value="<%= genre._id%>"
+        />
+        <% } %> <%= genre.name%>
+      </label>
+      <% } %>
     </fieldset>
 
-    <label for="store">
-      Choose store*
-      <select name="store" id="store" required>
-        <%for (store of stores){%>
-        <option value="<%= store._id%>"><%= store.name%></option>
-        <%}%>
-      </select>
-    </label>
+    <fieldset>
+      <legend>Choose store(s)*</legend>
+      <% for (const store of stores) { %>
+      <label for="<%=store._id%>">
+        <% if(store.checked){ %>
+        <input
+          id="<%=store._id%>"
+          type="checkbox"
+          name="store"
+          checked
+          value="<%= store._id%>"
+        />
+        <% } else { %>
+        <input
+          id="<%=store._id%>"
+          type="checkbox"
+          name="store"
+          value="<%= store._id%>"
+        />
+        <% } %> <%= store.name%>
+      </label>
+      <% } %>
+    </fieldset>
 
     <label for="price">
       Price*
-      <input type="number" id="price" required />
+      <input
+        type="number"
+        id="price"
+        name="price"
+        required
+        value="<%= game===null ? '': game.price %>"
+      />
     </label>
 
     <button>Submit</button>
   </form>
+  <%if(errors){%>
+  <ul>
+    <%for (const error of errors){%>
+    <li><%= error.msg %></li>
+    <%}%>
+  </ul>
+  <%}%>
 </div>

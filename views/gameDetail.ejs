@@ -10,7 +10,7 @@
       </div>
       <div class="genresStoresDevPrice">
         <div class="genresStoresDevs">
-          <div class="devs">Developer: <%= game.developer.name%></div>
+          <div class="devs">Developer: <%= game.developer?.name || ''%></div>
           <div class="genres">
             Genres: <%for (genre of game.genre){%> <%= genre.name%> <%}%>
           </div>

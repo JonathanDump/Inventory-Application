@@ -10,7 +10,7 @@ router.get("/", gameController.index);
 router.get("/games", gameController.gamesList);
 
 router.get("/game/create", gameController.gameCreateGet);
-// router.post("/game/create", gameController.gameCreatePost);
+router.post("/game/create", gameController.gameCreatePost);
 
 // router.get("/game/:id/update", gameController.gameUpdateGet);
 // router.post("/game/:id/update", gameController.gameUpdatePost);
