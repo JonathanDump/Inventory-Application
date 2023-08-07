@@ -1,0 +1,22 @@
+
+.games{
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.card{
+  border: 1px solid black;
+}
+
+.gameForm{
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: fit-content;
+}
+
+.sidebar{
+  padding: 16px;
+  display: flex;
+  gap: 16px;
+}

@@ -1,0 +1,29 @@
+<div class="gameDetailContainer">
+  <div class="gameDetailCard">
+    <div class="imgWrapper">
+      <img src="game.img" alt="" />
+    </div>
+    <div class="mainInfoWrapper">
+      <div class="titleDescription">
+        <div class="titlegame"><%= game.title%></div>
+        <div class="descriptionGame"><%= game.description%></div>
+      </div>
+      <div class="genresStoresDevPrice">
+        <div class="genresStoresDevs">
+          <div class="devs">Developer: <%= game.developer.name%></div>
+          <div class="genres">
+            Genres: <%for (genre of game.genre){%> <%= genre.name%> <%}%>
+          </div>
+          <div class="storoes">
+            Where to buy: <%for (store of game.store){%> <%= store.name%> <%}%>
+          </div>
+        </div>
+        <div class="price"><%= game.price%>₴</div>
+      </div>
+    </div>
+  </div>
+  <div class="buttonsContainer">
+    <a class="button" href="<%= game.url+'/delete'%>">Delete game</a>
+    <a class="button" href="<%= game.url+'/update'%>">Update game</a>
+  </div>
+</div>

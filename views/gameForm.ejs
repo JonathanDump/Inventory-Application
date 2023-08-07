@@ -1,0 +1,68 @@
+<div class="gameFormContainer">
+  <form action="" method="POST" class="gameForm">
+    <label for="title">
+      Game title*
+      <input
+        type="text"
+        id="title"
+        name="title"
+        required
+        class="input"
+        value="<%= game===null ? '': game.title %>"
+      />
+    </label>
+    <label for="description">
+      Game description
+      <input
+        type="text"
+        id="title"
+        name="title"
+        class="input"
+        value="<%= game===null ? '': game.title %>"
+      />
+    </label>
+
+    <label for="developer">
+      Choose a developer
+      <input
+        type="text"
+        id="developer"
+        name="developer"
+        list="developers"
+        value="<%= game===null ? '': game.developer %>"
+      />
+      <datalist id="developers">
+        <%for (developer of developers){%>
+        <option value="<%= developer.name%>"></option>
+        <%}%>
+      </datalist>
+    </label>
+
+    <fieldset>
+      <legend>Choose genre*</legend>
+      <% for (genre of genres) { %>
+      <label for="genre"><%= genre.name%></label>
+      <% if(game===null){ %>
+      <input type="checkbox" name="genre[]" required />
+      <% } else { %>
+      <input type="checkbox" name="genre[]" required checked />
+      <% } %> <% } %>
+    </fieldset>
+
+    <label for="store">
+      Choose store*
+      <select name="store" id="store" required>
+        <%for (store of stores){%>
+        <option value="<%= store._id%>"><%= store.name%></option>
+        <%}%>
+      </select>
+    </label>
+
+    <label for="price">
+      Price*
+      <input type="number" id="price" required />
+    </label>
+
+    <button>Submit</button>
+  </form>
+</div>

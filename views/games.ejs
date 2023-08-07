@@ -1,0 +1,9 @@
+<div class="games">
+  <% for (let game of games) {%>
+  <a href="<%= game.url %>" class="card">
+    <img src="" alt="game" />
+    <div class="game"><%= game.title %></div>
+  </a>
+
+  <%}%>
+</div>
