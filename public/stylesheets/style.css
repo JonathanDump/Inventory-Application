@@ -8,7 +8,7 @@
   border: 1px solid black;
 }
 
-.gameForm{
+.form{
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -17,6 +17,17 @@
 
 .sidebar{
   padding: 16px;
+  display: flex;
+  gap: 16px;
+}
+
+.genres{
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.buttonsContainer{
   display: flex;
   gap: 16px;
 }

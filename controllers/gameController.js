@@ -12,7 +12,7 @@ exports.index = asyncHandler(async (req, res, next) => {
 exports.gamesList = asyncHandler(async (req, res, next) => {
   const games = await Game.find().exec();
 
-  res.render("games", {
+  res.render("gamesList", {
     games,
   });
 });
@@ -58,25 +58,155 @@ exports.gameCreateGet = asyncHandler(async (req, res, next) => {
 
 exports.gameCreatePost = [
   (req, res, next) => {
-    console.log(req.body.title);
-    console.log(req.body.description);
-    console.log(req.body.developer);
-    console.log(req.body.genre);
-    console.log(req.body.store);
-    console.log(req.body.price);
-    next();
-  },
-  (req, res, next) => {
     if (!(req.body.genre instanceof Array)) {
-      if (typeof req.body.genre === "undefined") req.body.genre = [];
-      else req.body.genre = new Array(req.body.genre);
+      if (typeof req.body.genre === "undefined") {
+        req.body.genre = [];
+      } else {
+        req.body.genre = new Array(req.body.genre);
+      }
     }
     next();
   },
   (req, res, next) => {
     if (!(req.body.store instanceof Array)) {
-      if (typeof req.body.store === "undefined") req.body.store = [];
-      else req.body.store = new Array(req.body.store);
+      if (typeof req.body.store === "undefined") {
+        req.body.store = [];
+      } else {
+        req.body.store = new Array(req.body.store);
+      }
+    }
+    next();
+  },
+  body("title", "Title must not be empty.")
+    .trim()
+    .isLength({ min: 1 })
+    .escape(),
+  body(
+    "genre",
+    "Pick at least one genre or create one needed before creating a game."
+  )
+    .isArray({ min: 1 })
+    .escape(),
+  body("store", "Pick at least one store").isArray({ min: 1 }).escape(),
+  body("price", "Price must not be empty.")
+    .trim()
+    .isLength({ min: 1 })
+    .escape(),
+  body("developer").trim().escape(),
+
+  asyncHandler(async (req, res, next) => {
+    const errors = validationResult(req);
+    console.log(errors.array());
+    console.log("creating new game");
+
+    const developer =
+      req.body.developer === ""
+        ? undefined
+        : Developer.find({ name: req.body.developer })
+        ? Developer.find({ name: req.body.developer })._id
+        : new Developer({ name: req.body.developer });
+
+    const game = new Game({
+      title: req.body.title,
+      genre: req.body.genre,
+      price: req.body.price,
+      store: req.body.store,
+      developer: developer,
+      description: req.body.description,
+      img: req.body.img,
+    });
+    console.log("new game has been created");
+    if (!errors.isEmpty()) {
+      const [genres, stores, developers] = await Promise.all([
+        Genre.find().exec(),
+        Store.find().exec(),
+        Developer.find().exec(),
+      ]);
+
+      for (const genre of genres) {
+        console.log(game.genre.indexOf(genre._id));
+        if (game.genre.indexOf(genre._id) > -1) {
+          genre.checked = true;
+        }
+      }
+
+      for (const store of stores) {
+        if (game.store.indexOf(store._id) > -1) {
+          store.checked = true;
+        }
+      }
+
+      res.render("gameForm", {
+        title: "Create game",
+        genres,
+        developers,
+        stores,
+        game,
+        errors: errors.errors,
+      });
+    } else {
+      if (typeof developer === "object") {
+        await developer.save();
+      }
+      await game.save();
+      res.redirect(game.url);
+    }
+  }),
+];
+
+exports.gameUpdateGet = asyncHandler(async (req, res, next) => {
+  const [game, developers, genres, stores] = await Promise.all([
+    Game.findById(req.params.id).populate("developer").exec(),
+    Developer.find().exec(),
+    Genre.find().exec(),
+    Store.find().exec(),
+  ]);
+
+  for (const genre of genres) {
+    // console.log(game.genre.indexOf(genre._id));
+    // console.log(game.genre, genre._id);
+    console.log(game.genre);
+    // console.log(genre._id);
+    if (game.genre.indexOf(genre._id) > -1) {
+      genre.checked = true;
+    }
+  }
+
+  for (const store of stores) {
+    if (game.store.indexOf(store._id) > -1) {
+      store.checked = true;
+    }
+  }
+
+  const errors = null;
+  res.render("gameForm", {
+    title: "Update game",
+    game,
+    errors,
+    developers,
+    genres,
+    stores,
+  });
+});
+
+exports.gameUpdatePost = [
+  (req, res, next) => {
+    if (!(req.body.genre instanceof Array)) {
+      if (typeof req.body.genre === "undefined") {
+        req.body.genre = [];
+      } else {
+        req.body.genre = new Array(req.body.genre);
+      }
+    }
+    next();
+  },
+  (req, res, next) => {
+    if (!(req.body.store instanceof Array)) {
+      if (typeof req.body.store === "undefined") {
+        req.body.store = [];
+      } else {
+        req.body.store = new Array(req.body.store);
+      }
     }
     next();
   },
@@ -114,6 +244,7 @@ exports.gameCreatePost = [
         : new Developer({ name: req.body.developer });
 
     const game = new Game({
+      _id: req.params.id,
       title: req.body.title,
       genre: req.body.genre,
       price: req.body.price,
@@ -130,21 +261,21 @@ exports.gameCreatePost = [
         Developer.find().exec(),
       ]);
 
-      for (genre of genres) {
+      for (const genre of genres) {
         console.log(game.genre.indexOf(genre._id));
         if (game.genre.indexOf(genre._id) > -1) {
           genre.checked = true;
         }
       }
 
-      for (store of stores) {
+      for (const store of stores) {
         if (game.store.indexOf(store._id) > -1) {
           store.checked = true;
         }
       }
 
       res.render("gameForm", {
-        title: "Create game",
+        title: "Update game",
         genres,
         developers,
         stores,
@@ -152,11 +283,26 @@ exports.gameCreatePost = [
         errors: errors.errors,
       });
     } else {
-      await game.save();
       if (typeof developer === "object") {
         await developer.save();
       }
-      res.redirect(game.url);
+      const updatedGame = await Game.findByIdAndUpdate(req.params.id, game, {});
+
+      res.redirect(updatedGame.url);
     }
   }),
 ];
+
+exports.gameDeleteGet = asyncHandler(async (req, res, next) => {
+  const game = Game.findById(req.params.id, "title").exec();
+  // console.log(await game);
+  res.render("gameDelete", {
+    game,
+  });
+});
+
+exports.gameDeletePost = asyncHandler(async (req, res, next) => {
+  console.log(req.body.gameID);
+  await Game.findByIdAndRemove(req.params.id);
+  res.redirect("/catalog/games");
+});

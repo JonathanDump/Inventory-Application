@@ -1,13 +1,14 @@
-<div class="gameDetailContainer">
-  <div class="title"><%= title %></div>
+<div class="details">
+  <div class="title"><%=genre.name%></div>
+  <%if(games.length){%> <%for(const game of games){%>
   <div class="gameDetailCard">
     <div class="imgWrapper">
       <img src="game.img" alt="" />
     </div>
     <div class="mainInfoWrapper">
       <div class="titleDescription">
-        <div class="titlegame"><%= game.title%></div>
-        <div class="descriptionGame">Description: <%= game.description%></div>
+        <a href="<%= game.url%>" class="titlegame"><%= game.title%></a>
+        <div class="descriptionGame"><%= game.description%></div>
       </div>
       <div class="genresStoresDevPrice">
         <div class="genresStoresDevs">
@@ -24,8 +25,7 @@
       </div>
     </div>
   </div>
-  <div class="buttonsContainer">
-    <a class="button" href="<%= game.url+'/delete'%>">Delete game</a>
-    <a class="button" href="<%= game.url+'/update'%>">Update game</a>
-  </div>
+  <%}%> <%} else {%>
+  <div class="message">There ara no games yet</div>
+  <%}%>
 </div>
