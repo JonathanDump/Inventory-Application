@@ -96,8 +96,6 @@ exports.gameCreatePost = [
 
   asyncHandler(async (req, res, next) => {
     const errors = validationResult(req);
-    console.log(errors.array());
-    console.log("creating new game");
 
     const developer =
       req.body.developer === ""
@@ -115,7 +113,7 @@ exports.gameCreatePost = [
       description: req.body.description,
       img: req.body.img,
     });
-    console.log("new game has been created");
+
     if (!errors.isEmpty()) {
       const [genres, stores, developers] = await Promise.all([
         Genre.find().exec(),
@@ -124,7 +122,6 @@ exports.gameCreatePost = [
       ]);
 
       for (const genre of genres) {
-        console.log(game.genre.indexOf(genre._id));
         if (game.genre.indexOf(genre._id) > -1) {
           genre.checked = true;
         }
@@ -163,10 +160,6 @@ exports.gameUpdateGet = asyncHandler(async (req, res, next) => {
   ]);
 
   for (const genre of genres) {
-    // console.log(game.genre.indexOf(genre._id));
-    // console.log(game.genre, genre._id);
-    console.log(game.genre);
-    // console.log(genre._id);
     if (game.genre.indexOf(genre._id) > -1) {
       genre.checked = true;
     }
@@ -233,8 +226,6 @@ exports.gameUpdatePost = [
 
   asyncHandler(async (req, res, next) => {
     const errors = validationResult(req);
-    console.log(errors.array());
-    console.log("creating new game");
 
     const developer =
       req.body.developer === ""
@@ -253,7 +244,7 @@ exports.gameUpdatePost = [
       description: req.body.description,
       img: req.body.img,
     });
-    console.log("new game has been created");
+
     if (!errors.isEmpty()) {
       const [genres, stores, developers] = await Promise.all([
         Genre.find().exec(),
@@ -262,7 +253,6 @@ exports.gameUpdatePost = [
       ]);
 
       for (const genre of genres) {
-        console.log(game.genre.indexOf(genre._id));
         if (game.genre.indexOf(genre._id) > -1) {
           genre.checked = true;
         }
@@ -295,14 +285,13 @@ exports.gameUpdatePost = [
 
 exports.gameDeleteGet = asyncHandler(async (req, res, next) => {
   const game = Game.findById(req.params.id, "title").exec();
-  // console.log(await game);
+
   res.render("gameDelete", {
     game,
   });
 });
 
 exports.gameDeletePost = asyncHandler(async (req, res, next) => {
-  console.log(req.body.gameID);
   await Game.findByIdAndRemove(req.params.id);
   res.redirect("/catalog/games");
 });

@@ -24,21 +24,31 @@ exports.genreDetail = asyncHandler(async (req, res, next) => {
 });
 
 exports.genreCreateGet = asyncHandler(async (req, res, next) => {
+  const genre = null;
+  const errors = null;
   res.render("genreForm", {
     title: "Add genre",
+    genre,
+    errors,
   });
 });
 
 exports.genreCreatePost = [
-  body("name", "Name should be provided").trim().isLength({ min: 1 }).escape(),
-  asyncHandler(async (res, req, next) => {
+  body("genreName", "Name should be provided")
+    .trim()
+    .isLength({ min: 1 })
+    .escape(),
+  asyncHandler(async (req, res, next) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      res.render("genreCreate", {
+      const genre = null;
+      res.render("genreForm", {
+        title: "Add genre",
+        genre,
         errors: errors.errors,
       });
     } else {
-      const genre = new Genre({ name: req.body.name });
+      const genre = new Genre({ name: req.body.genreName });
       await genre.save();
       res.redirect("/catalog/genres");
     }
@@ -71,10 +81,6 @@ exports.genreUpdatePost = [
 ];
 
 exports.genreDeleteGet = asyncHandler(async (req, res, next) => {
-  await Genre.findByIdAndDelete(req.body.genreID);
-});
-
-exports.genreDeletePost = asyncHandler(async (req, res, next) => {
   const [genre, games] = await Promise.all([
     Genre.findById(req.params.id).exec(),
     Game.find({ genre: req.params.id }),
@@ -84,4 +90,9 @@ exports.genreDeletePost = asyncHandler(async (req, res, next) => {
     genre,
     games,
   });
+});
+
+exports.genreDeletePost = asyncHandler(async (req, res, next) => {
+  await Genre.findByIdAndDelete(req.body.genreID);
+  res.redirect("/catalog/genres");
 });
