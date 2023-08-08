@@ -4,6 +4,8 @@ const Game = require("../models/game");
 const Genre = require("../models/genre");
 const Developer = require("../models/developer");
 const Store = require("../models/store");
+const fs = require("fs");
+var path = require("path");
 
 exports.index = asyncHandler(async (req, res, next) => {
   res.redirect("/catalog/games");
@@ -111,7 +113,10 @@ exports.gameCreatePost = [
       store: req.body.store,
       developer: developer,
       description: req.body.description,
-      img: req.body.img,
+      img: {
+        data: fs.readFileSync(path.join(__dirname + "/uploads/" + Date.now())),
+        contentType: "image/png",
+      },
     });
 
     if (!errors.isEmpty()) {
@@ -242,7 +247,7 @@ exports.gameUpdatePost = [
       store: req.body.store,
       developer: developer,
       description: req.body.description,
-      img: req.body.img,
+      img: { data: req.file.buffer, contentType: req.file.mimetype },
     });
 
     if (!errors.isEmpty()) {

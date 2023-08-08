@@ -2,7 +2,11 @@
   <div class="title"><%= title %></div>
   <div class="gameDetailCard">
     <div class="imgWrapper">
-      <img src="game.img" alt="" />
+      <img
+        src="data:image/<%=game.img.contentType%>;base64,
+                    <%=game.img.data.toString('base64')%>"
+        alt=""
+      />
     </div>
     <div class="mainInfoWrapper">
       <div class="titleDescription">

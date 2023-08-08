@@ -4,13 +4,30 @@ const router = express.Router();
 const gameController = require("../controllers/gameController");
 const genreController = require("../controllers/genreController");
 
+var multer = require("multer");
+
+var storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "/controllers/uploads");
+  },
+  filename: (req, file, cb) => {
+    cb(null, file.fieldname + "-" + Date.now());
+  },
+});
+
+var upload = multer({ storage: storage });
+
 /// GAME ROUTES ///
 // router.get("/", gameController.index);
 
 router.get("/games", gameController.gamesList);
 
 router.get("/game/create", gameController.gameCreateGet);
-router.post("/game/create", gameController.gameCreatePost);
+router.post(
+  "/game/create",
+  upload.single("img"),
+  gameController.gameCreatePost
+);
 
 router.get("/game/:id/update", gameController.gameUpdateGet);
 router.post("/game/:id/update", gameController.gameUpdatePost);
