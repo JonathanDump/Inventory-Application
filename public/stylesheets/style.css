@@ -31,3 +31,7 @@
   display: flex;
   gap: 16px;
 }
+
+.title{
+  padding: 16px;
+}

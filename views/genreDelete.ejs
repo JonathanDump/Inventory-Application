@@ -3,9 +3,12 @@
   <div class="title">
     You have to delete these games first, before deleting the genre
   </div>
-  <%for (const game of games) {%>
-  <a href="/catalog/game/<%=game._id%>"><%=game.name%></a>
-  <%}%> <%} else {%>
+  <div class="games">
+    <%for (const game of games) {%>
+    <a href="/catalog/game/<%=game._id%>"><%=game.title%></a>
+    <%}%>
+  </div>
+  <%} else {%>
   <div class="title">Are you sure you want to delete <%= genre.name%></div>
   <form action="" method="POST">
     <input type="hidden" id="genreID" name="genreID" value="<%= genre._id%>" />
